@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from .models import Comptes
+from .models import Comptes,produit
 # Create your views here.
 
 
@@ -29,5 +29,47 @@ def Afficher_Stock(request):
     return render(request,"index.html")
 
 
+
+def testing(request):
+    return render(request,"test.html")
+
+
+def lololo(request):
+    return render(request,"partials/file.html")
+
 def Logout(request):
     return render(request,"login.html")
+
+def lister_produit(request):
+    prod = produit.objects.all()
+    return render(request,"operations/liste_produit.html",{"prod":prod})
+
+
+def modifier_produit(request,pk):
+    prd=''
+    try : 
+        prd=produit.objects.get(id=pk)
+    except : 
+        return redirect('produits')
+    if request.method == 'POST' :
+        form = produit(request.POST,pk=prd)
+        if form.is_valid() : 
+            form.save()
+            return redirect('produits')
+    else :
+        form=produit(pk=prd)
+        return render(request,'operations/modifier_produit.html',{"form":form})
+
+
+def supprimer_produit(request,pk):
+    prd=''
+    try : 
+        prd=produit.objects.get(id=pk)
+    except : 
+        lister_produit(request)
+    if request.method == 'POST' :
+        prd=produit.objects.get(id=pk)
+        prd.delete()
+        redirect(request,'produits')
+    else :
+        return render(request,'operations/supprimer_produit.html')

@@ -1,7 +1,11 @@
 from django.db import models
-from phonenumber_field.modelfields import PhoneNumberField
 
-# Create your models here.
+#login model
+class Comptes(models.Model):
+    username=models.CharField(max_length=20,primary_key=True)
+    password=models.CharField(max_length=20)
+
+
 
 #typeproduit
 class type_produit(models.Model):
@@ -12,7 +16,9 @@ class type_produit(models.Model):
 #produit
 class produit(models.Model):
     designation=models.CharField(max_length=50)
-    type=models.ForeignKey(type_produit)
+    type=models.ForeignKey(type_produit,on_delete=models.CASCADE)
+    def __str__(self):
+        return str(self.Description_cmd)
     
 
 
@@ -21,8 +27,7 @@ class client(models.Model):
     nom=models.CharField(max_length=20)
     prenom=models.CharField(max_length=20)
     adress=models.CharField(max_length=50)
-    telephone=PhoneNumberField()
-    achete=models.ManyToManyField(produit)
+    telephone=models.CharField(max_length=10)
 
 
 #fournisseur
@@ -30,9 +35,4 @@ class fournisseur(models.Model):
     nom=models.CharField(max_length=20)
     prenom=models.CharField(max_length=20)
     adress=models.CharField(max_length=50)
-    telephone=PhoneNumberField()
-    fournir=models.ManyToOneRel(field=produit.pk,to=produit)
-
-class Comptes(models.Model):
-    username=models.CharField(max_length=20,primary_key=True)
-    password=models.CharField(max_length=20)
+    telephone=models.CharField(max_length=10)

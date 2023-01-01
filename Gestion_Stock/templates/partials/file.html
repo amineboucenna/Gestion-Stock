@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% load static %}
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <link href="{% static 'fontawesome/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="{% static 'mycss/style.css' %}">
+
+  
+    
+    
+</head>
+<body>
+    
+
+    <div class="side-menu"> 
+        <ul>
+            <li><a href="/login/stock"><i class="fa-solid fa-boxes-stacked"></i><div>Stock</div></a></li>
+            <li><a href="/login/achat"><i class="fa-solid fa-cart-shopping"></i></i> <div>Achat</div>
+                <ul class="babaoi" hidden><li>;lasdkas</li> <li>dsksj</li></ul>  
+            </a></li>
+            <li><a href="/login/vente"><i class="fa  fa-dollar"></i> <div>vente</div></a></li>
+            <li><a href="/login/analyse"><i class="fa  fa-dashboard"></i> <div>Analyse</div></a></li>
+            <li><a href="/login"><i class="fa-solid fa-right-from-bracket"></i></i> <div>Logout</div></a></li>
+        </ul>
+    </div>
+
+   
+    <script>
+        
+    </script>
+
+</body>
+</html>
