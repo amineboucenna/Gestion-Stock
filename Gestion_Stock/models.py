@@ -10,15 +10,18 @@ class Comptes(models.Model):
 #typeproduit
 class type_produit(models.Model):
     designation=models.CharField(max_length=50)
+    def __getname__(self):
+        return self.designation 
+    
 
 
 
 #produit
 class produit(models.Model):
     designation=models.CharField(max_length=50)
-    type=models.ForeignKey(type_produit,on_delete=models.CASCADE)
+    type=models.ForeignKey(type_produit,on_delete=models.CASCADE,related_name='type_produit')
     def __str__(self):
-        return str(self.Description_cmd)
+        return str(self.Creer_produit)
     
 
 
@@ -28,6 +31,8 @@ class client(models.Model):
     prenom=models.CharField(max_length=20)
     adress=models.CharField(max_length=50)
     telephone=models.CharField(max_length=10)
+    def __str__(self):
+        return str(self)
 
 
 #fournisseur
@@ -36,3 +41,5 @@ class fournisseur(models.Model):
     prenom=models.CharField(max_length=20)
     adress=models.CharField(max_length=50)
     telephone=models.CharField(max_length=10)
+    def __str__(self):
+        return str(self)
