@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
-from .models import Comptes,produit,client,fournisseur
-from .forms import Creer_client, Creer_fournisseur, Creer_produit
+from .models import Comptes, bon_commande,produit,client,fournisseur, type_produit
+from .forms import Creer_bl, Creer_bon_commande, Creer_client, Creer_facture, Creer_fournisseur, Creer_produit, Creer_typep
 # Create your views here.
 
 
@@ -42,21 +42,65 @@ def Logout(request):
     return render(request,"login.html")
 
 
+###############################################################################################
+# les views de type_produit :
+
+def modifier_type_produit(request,pk):
+    try : 
+        typep=type_produit.objects.get(id=pk)
+    except : 
+        return redirect('produits')
+    if request.method == 'POST' :
+        form = Creer_typep(request.POST,instance=typep)
+        if form.is_valid() : 
+            form.save()
+            return redirect('produits')
+
+    else :
+        form=Creer_typep(instance=typep)
+        return render(request,'operations/produit/modifiertypep.html',{"form":form})
+
+
+
+def supprimer_type_produit(request,pk):
+    typep=''
+    if request.method == 'POST' :
+        typep=type_produit.objects.get(id=pk)
+        typep.delete()
+        return redirect('produits')
+    else :
+        typep=type_produit.objects.get(id=pk)
+        return render(request,'operations/produit/supprimertypep.html',{"prod":typep})
+
+
+
 
 ###############################################################################################
-# les views de la produit : 
+# les views de produit : 
 def lister_produit(request):
     if request.method == 'POST' :
         form=Creer_produit(request.POST)
         if form.is_valid() :
             form.save()
             form=Creer_produit()
+            form_typep=Creer_typep()
             prod = produit.objects.all()
-            return render(request,"operations/produit/liste.html",{"prod":prod,"form":form})
+            typep = type_produit.objects.all()
+            return render(request,"operations/produit/liste.html",{"typep":typep,"prod":prod,"form_typep":form_typep,"form":form})
+        form=Creer_typep(request.POST)
+        if form.is_valid() :
+            form.save()
+            form=Creer_produit()
+            form_typep=Creer_typep()
+            prod = produit.objects.all()
+            typep = type_produit.objects.all()
+            return render(request,"operations/produit/liste.html",{"typep":typep,"prod":prod,"form_typep":form_typep,"form":form})
     else:
         form=Creer_produit()
+        form_typep=Creer_typep()
         prod = produit.objects.all()
-        return render(request,"operations/produit/liste.html",{"prod":prod,"form":form})
+        typep = type_produit.objects.all()
+        return render(request,"operations/produit/liste.html",{"typep":typep,"prod":prod,"form_typep":form_typep,"form":form})
 
 
 def modifier_produit(request,pk):
@@ -231,3 +275,79 @@ def rechercher_fournisseur(request):
     else :
         return render(request,"operations/fournisseur/rechercher.html")
 
+
+###############################################################################################
+#les views bon_commande
+def creer_bon_commande(request):
+    if request.method == 'POST' :
+        form=Creer_bon_commande(request.POST)
+        if form.is_valid() :
+            form.save()
+            form=Creer_bon_commande()
+            bc = bon_commande.objects.all()
+            return render(request,"achat/creerbc.html",{"bc":bc,"form":form})
+    else:
+        form=Creer_bon_commande()
+        bc = bon_commande.objects.all()
+        return render(request,"achat/creerbc.html",{"bc":bc,"form":form})
+
+
+
+
+def modifier_bon_commande(request,pk):
+    try : 
+        bc=bon_commande.objects.get(id=pk)
+    except : 
+        return redirect('bon_commandes')
+    if request.method == 'POST' :
+        form = Creer_bon_commande(request.POST,instance=bc)
+        if form.is_valid() : 
+            form.save()
+            return redirect('bon_commandes')
+
+    else :
+        form=Creer_bon_commande(instance=bc)
+        return render(request,'achat/modifierbc.html',{"form":form})
+
+
+
+
+def supprimer_bon_commande(request,pk):
+    bc=''
+    if request.method == 'POST' :
+        bc=bon_commande.objects.filter(code_document=pk)
+        bc.delete()
+        return redirect('bon_commandes')
+    else :
+        bc=bon_commande.objects.filter(code_document=pk)
+        return render(request,'achat/supprimerbc.html',{"typep":bc})
+
+
+
+###############################################################################################
+#les views facture
+def creer_facture(request):
+    if request.method == 'POST' :
+        form=Creer_facture(request.POST)
+        if form.is_valid() :
+            form.save()
+            form=Creer_facture()
+            return render(request,"achat/creerfacture.html",{"form":form})
+    else:
+        form=Creer_facture()
+        return render(request,"achat/creerfacture.html",{"form":form})
+
+
+
+###############################################################################################
+#les views facture
+def creer_bl(request):
+    if request.method == 'POST' :
+        form=Creer_bl(request.POST)
+        if form.is_valid() :
+            form.save()
+            form=Creer_bl()
+        return render(request,"achat/creerbl.html",{"form":form})
+    else:
+        form=Creer_bl()
+        return render(request,"achat/creerbl.html",{"form":form})

@@ -9,11 +9,13 @@
 
   <style>
     .card>*,
-    #search-box {
+    #search-box,
+    .list-message {
       margin: 2%;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       font-weight: bold;
     }
+  
   </style>
 
 </head>
@@ -28,26 +30,46 @@
   </nav>
 
   <div id="search-box">
+    <h4 class="list-message">Rechercher un produit par : </h4>
 
-    <button onclick=location.href="{% url 'rechercher_produit' %}" type="button" class="btn btn-success"> Rechercher par designation
+    <button onclick=location.href="{% url 'rechercher_produit' %}" type="button" class="btn btn-success"> Rechercher par
+      designation
     </button>
-    <button onclick=location.href="{% url 'rechercher_type_produit' %}" type="button" class="btn btn-success"> Rechercher par type
+    <button onclick=location.href="{% url 'rechercher_type_produit' %}" type="button" class="btn btn-success">
+      Rechercher par type
     </button>
-    <button onclick=location.href="{% url 'rechercher_typep_produit' %}" type="button" class="btn btn-success"> Rechercher par type produit
+    <button onclick=location.href="{% url 'rechercher_typep_produit' %}" type="button" class="btn btn-success">
+      Rechercher par type produit
     </button>
 
   </div>
 
   <div class="card">
+
+    <h4 class="list-message">Creer un produit : </h4>
     <form action="" method="post">
 
       {% csrf_token %}
       {{form.as_p}}
 
       <button type="submit" class="btn btn-success">Ajouter</button>
+    </form>
+    <h4 class="list-message">Creer un type produit : </h4>
+
+    
+    <form action="" method="post">
+
+      {% csrf_token %}
+      {{form_typep.as_p}}
+
+      <button type="submit" class="btn btn-success">Ajouter</button>
 
     </form>
+
+
   </div>
+
+  <h4 class="list-message">La liste des produits : </h4>
 
 
   <table class="table-responsive table-bordered">
@@ -56,6 +78,7 @@
         <th class="bg-success" scope="col">#</th>
         <th class="bg-success" scope="col">Designation</th>
         <th class="bg-success" scope="col">Type</th>
+        <th class="bg-success" scope="col">Type Produit</th>
         <th class="bg-success" scope="col">Action</th>
       </tr>
     </thead>
@@ -67,7 +90,8 @@
       <tr>
         <td>{{p.pk}}</td>
         <td>{{p.designation}}</td>
-        <td>{{p.type.designation}}</td>
+        <td>{{p.type}}</td>
+        <td>{{p.typep.designation}}</td>
         <td>
 
           <button onclick=location.href="{% url 'modifier_produits' p.pk %}" type="button" class="btn btn-warning"> Edit
@@ -81,10 +105,31 @@
     </tbody>
   </table>
 
+  <h4 class="list-message">La liste des types produit : </h4>
 
-
-
-
+  <table class="table-responsive table-bordered">
+    <thead>
+      <tr>
+        <th class="bg-success" scope="col">#</th>
+        <th class="bg-success" scope="col">Designation</th>
+        <th class="bg-success" scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in typep %}
+      <tr>
+        <td>{{p.pk}}</td>
+        <td>{{p.designation}}</td>
+        <td>
+          <button onclick=location.href="{% url 'modifier_typeproduit' p.pk %}" type="button"
+            class="btn btn-warning">Edit</button>
+          <button onclick=location.href="{% url 'supprimer_typeproduit' p.pk %}" type="button"
+            class="btn btn-danger">Delete </button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
 </body>
 

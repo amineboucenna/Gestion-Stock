@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supprimer</title>
+    <title>Supprimer bon commande</title>
     <style>
         h4,
         #confirm-delete-form {
@@ -21,37 +21,42 @@
 
     <nav class="navbar navbar-light bg-dark">
         <span class="navbar-text">
-            Supression du produit
+            Supression d'un bon commande
         </span>
     </nav>
 
 
-    <h4>Vous etes en train de supprimer le produit : </h4>
+    <h4>Vous etes en train de supprimer le bon commande : </h4>
 
     <table class="table-responsive table-bordered">
         <thead>
-            <tr>
-                <th class="bg-success" scope="col">#</th>
-                <th class="bg-success" scope="col">Designation</th>
-                <th class="bg-success" scope="col">Type</th>
-                <th class="bg-success" scope="col">Type Produit</th>
-            </tr>
+          <tr>
+            <th class="bg-success" scope="col">#</th>
+            <th class="bg-success" scope="col">Code document</th>
+            <th class="bg-success" scope="col">Designation</th>
+            <th class="bg-success" scope="col">Qte</th>
+          </tr>
         </thead>
-
+    
+    
+    
         <tbody>
-            <tr>
-                <td>{{prod.pk}}</td>
-                <td>{{prod.designation}}</td>
-                <td>{{prod.type}}</td>
-                <td>{{prod.typep.designation}}</td>
-            </tr>
+            {% for t in typep %}
+          <tr>
+            <td>{{t.pk}}</td>
+            <td>{{t.code_document}}</td>
+            <td>{{t.contient.designation}}</td>
+            <td>{{t.qte}}</td>
+          </tr>
+          {% endfor %}
         </tbody>
-    </table>
+      </table>
+    
 
 
     <form id="confirm-delete-form" method="post">
         {% csrf_token %}
-        <button onclick=location.href="{% url 'produits' %}" type="button" class="btn btn-primary"> Annuler </button>
+        <button onclick=location.href="{% url 'bon_commandes' %}" type="button" class="btn btn-primary"> Annuler </button>
         <button type="submit" class="btn btn-danger"> Supprimer </button>
     </form>
 
