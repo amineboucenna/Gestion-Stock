@@ -12,7 +12,7 @@ class Comptes(models.Model):
 #typeproduit
 class type_produit(models.Model):
     designation=models.CharField(max_length=50)
-    def __getname__(self):
+    def __str__(self):
         return self.designation 
     
 
@@ -23,8 +23,11 @@ class produit(models.Model):
     designation=models.CharField(max_length=50)
     type=models.CharField(max_length=50)
     typep=models.ForeignKey(type_produit,on_delete=models.CASCADE,related_name='type_produit')
+    qte = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1), MaxValueValidator(10000)])
+    prix_achat=models.FloatField(max_length=10,default=0,validators=[MinValueValidator(0)])
+    prix_vente=models.FloatField(max_length=10,default=0,validators=[MinValueValidator(0)])
     def __str__(self):
-        return str(self)
+        return self.typep.designation
     def __str__(self):
         return self.designation
     
@@ -44,6 +47,9 @@ class fournisseur(models.Model):
     prenom=models.CharField(max_length=20)
     adress=models.CharField(max_length=50)
     telephone=models.CharField(max_length=10)
+    solde=models.FloatField(max_length=10,default=0)
+    def __str__(self):
+        return self.nom+' '+self.prenom
 
 
 #bon de commande
@@ -51,21 +57,29 @@ class bon_commande(models.Model):
     code_document = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     qte = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(10000)])
     contient = models.ManyToManyField(produit,related_name='produit')
-
+    def __str__(self):
+        return  self.contient.designation
+    def __str__(self):
+        return  self.contient.typep.designation
+    def __str__(self):
+        return self.code_document.__str__()
 
 #facture
 class facture(models.Model):
-    code_document = models.OneToOneField(bon_commande,on_delete=models.CASCADE,related_name='asdssd')
+    code_document = models.OneToOneField(bon_commande,on_delete=models.CASCADE,related_name='code_document1')
     date_document = models.DateTimeField(default=datetime.now)
-    facture_etablie_bonc = models.OneToOneField(bon_commande,on_delete=models.CASCADE,related_name='qsasaa')
-    facture_avoir = models.ForeignKey(fournisseur,on_delete=models.CASCADE,related_name='adsq')
-
+    facture_avoir = models.ForeignKey(fournisseur,on_delete=models.CASCADE,related_name='fournisseur_facture')
+    
 
 #BL
 class bl(models.Model):
-    code_document = models.OneToOneField(bon_commande,on_delete=models.CASCADE,related_name='lol')
+    code_document = models.OneToOneField(bon_commande,on_delete=models.CASCADE,related_name='code_document2')
     date_document = models.DateTimeField(default=datetime.now)
-    bl_etablie_bonc = models.OneToOneField(bon_commande,on_delete=models.CASCADE,related_name='hello')
-    bl_avoir = models.ForeignKey(fournisseur,on_delete=models.CASCADE,related_name='dsssdsa')
+    bl_avoir = models.ForeignKey(fournisseur,on_delete=models.CASCADE,related_name='fornisseur_bl')
+
+
+#entree stock
+class entree_stock(models.Model):
+    contient_produit=models.ManyToManyField(bon_commande)
     def __str__(self):
-        return (self.Creer_bl)
+        return self.contient_produit.contient

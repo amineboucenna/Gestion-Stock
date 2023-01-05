@@ -28,7 +28,7 @@ class Creer_fournisseur(forms.ModelForm):
 class Creer_bon_commande(forms.ModelForm):
     class Meta:
         model = bon_commande
-        fields= 'code_document' , 'contient' , 'qte',
+        fields="__all__"
 
 
 

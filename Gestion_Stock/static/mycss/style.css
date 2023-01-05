@@ -1,8 +1,8 @@
-.side-menu {
-    display: inline-block;
-    float: right;
+.side-menu{
+    float: left;
+    display: block;
     font-family: 'San Fransico', sans-serif;
-    height: 100vh;
+    height: 100vmax;
     background: rgb(3, 17, 59);
 }
 
@@ -78,5 +78,4 @@ th{
 th,td{
     width: 2%;
     padding: 1%;
-    
 }

@@ -4,16 +4,13 @@ from . import views
 from django.views.generic import RedirectView
 
 urlpatterns = [
+    path('',views.redirect_login),
 
-    #login functions
-    path('login/',views.Verify_Login),
-    path('login/stock/',views.Afficher_Stock),
 
-    #Remarque : 
-        #
-        #
-        #
-
+    #login
+    path('login/',views.Verify_Login,name='loginpage'),
+    
+    
     #model produit
     path('login/produits/',views.lister_produit,name='produits'),
     path('login/produits/modifier/<int:pk>',views.modifier_produit,name='modifier_produits'),
@@ -26,7 +23,7 @@ urlpatterns = [
 
 
     #model typeproduit
-    #remarque l'affichage de type produit a ete fait avec l'affichage de produit
+    #remarque : l'affichage de type produit a ete fait avec l'affichage de produit
     path('login/produits/modifiertype/<int:pk>',views.modifier_type_produit,name='modifier_typeproduit'),
     path('login/produits/modifiertype/',RedirectView.as_view(url='/produits/')),
     path('login/produits/supprimertype/<int:pk>',views.supprimer_type_produit,name='supprimer_typeproduit'),
@@ -58,6 +55,7 @@ urlpatterns = [
     path('login/achat/supprimer_bon_commande/<int:pk>',views.supprimer_bon_commande,name='supprimer_bon_commandes'),
     path('login/achat/modifier_bon_commande/',RedirectView.as_view(url='/bon_commandes/')),
     path('login/achat/supprimer_bon_commande/',RedirectView.as_view(url='/bon_commandes/')),
+    path('login/achat/downloadpdf/<int:code>',views.save_bc_pdf,name='enregistrer_bc_pdf'),
 
     #model facutre
     path('login/achat/facture/',views.creer_facture,name='factures'),
@@ -65,5 +63,30 @@ urlpatterns = [
 
     #model bonlivraison
     path('login/achat/bonlivraison/',views.creer_bl,name='bls'),
+
+    #etat de stock selui de l'achat
+    path('login/achat/etatstock/<int:id>',views.saisir_etat_stock,name='achat_etat_stock'),
+
+
+
+
+
+
+    #STOCK
+    #etat
+    path('login/stock/etatstock/',views.afficher_etat_stock,name='etat_stock'),
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ]

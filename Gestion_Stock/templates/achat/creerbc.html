@@ -33,8 +33,6 @@
       {% csrf_token %}
       {{form.as_p}}
       <button type="submit" class="btn btn-success">Ajouter </button>
-      <button type="submit" class="btn btn-success">Enregistrer pdf</button>
-      <button type="submit" class="btn btn-success">Imprimer</button>
     </form>
   </div>
 
@@ -57,10 +55,9 @@
         <td>{{b.contient}}</td>
         <td>{{b.qte}}</td>
         <td>
-          <button onclick=location.href="{% url 'modifier_bon_commandes' b.pk %}" type="button" class="btn btn-warning"> Edit
-          </button>
-          <button onclick=location.href="{% url 'supprimer_bon_commandes' b.code_document  %}" type="button" class="btn btn-danger">
-            Delete </button>
+          <button type="button" class="btn btn-warning" onclick=location.href="{% url 'enregistrer_bc_pdf' b.code_document  %}">Enregistrer pdf</button>
+          <button onclick=location.href="{% url 'modifier_bon_commandes' b.pk %}" type="button" class="btn btn-warning"> Edit </button>
+          <button onclick=location.href="{% url 'supprimer_bon_commandes' b.code_document  %}" type="button" class="btn btn-danger"> Delete </button>
         </td>
       </tr>
       {% endfor %}

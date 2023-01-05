@@ -32,12 +32,40 @@
       {% csrf_token %}
       {{form.as_p}}
       <button type="submit" class="btn btn-success">Ajouter </button>
+      <button onclick=location.href="{% url 'fournisseurs' %}" type="button" class="btn btn-warning">Nouveau
+        fournisseur</button>
     </form>
-    <button onclick=location.href="{% url 'fournisseurs' %}" type="button" class="btn btn-success">
-      Creer un nouveau fournisseur </button>
   </div>
 
 
+  <table class="table-responsive table-bordered">
+    <thead>
+      <tr>
+        <th class="bg-success" scope="col">#</th>
+        <th class="bg-success" scope="col">Code Document</th>
+        <th class="bg-success" scope="col">Date Document</th>
+        <th class="bg-success" scope="col">Fournisseur</th>
+        <th class="bg-success" scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for facture in factures %}
+      <tr>
+        <td>{{facture.pk}}</td>
+        <td>{{facture.code_document.code_document}}</td>
+        <td>{{facture.date_document}}</td>
+        <td>{{facture.facture_avoir.nom}} {{facture.facture_avoir.prenom}}</td>
+        <td><button onclick=location.href="{% url 'achat_etat_stock' facture.code_document.code_document %}" type="button" class="btn btn-warning">Saisir l'entree du stock</button></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
 </body>
+
+<script>
+  elt = document.getElementsByTagName('label')[2].innerText = "Fournisseur : ";
+</script>
+
 
 </html>

@@ -1,8 +1,25 @@
+#imports for generating pdf file
+
+import datetime
+import io
+from reportlab.pdfgen import canvas
+
+from django.http import FileResponse
 from django.shortcuts import redirect, render
-from .models import Comptes, bon_commande,produit,client,fournisseur, type_produit
-from .forms import Creer_bl, Creer_bon_commande, Creer_client, Creer_facture, Creer_fournisseur, Creer_produit, Creer_typep
+
+#imports for views
+
+from .forms import (Creer_bl, Creer_bon_commande, Creer_client, Creer_facture,
+                    Creer_fournisseur, Creer_produit, Creer_typep)
+from .models import (Comptes, bl, bon_commande, client, facture, fournisseur,
+                     produit, type_produit)
+
+
+
 # Create your views here.
 
+def redirect_login(request):
+    return redirect('loginpage')
 
 def Verify_Login(request):
     if request.method == "GET" : 
@@ -12,7 +29,7 @@ def Verify_Login(request):
             passwordquery=request.GET.get('passwordinput')
             if database_username :
                 if database_username[0].username == accountquery and database_username[0].password == passwordquery :
-                    return redirect('stock/')
+                    return redirect('produits')
                 else :
                     msg = 'Incorrect username or password'
                     return render(request,"login.html",{"msg":msg})
@@ -23,20 +40,6 @@ def Verify_Login(request):
             return render(request,"login.html")
 
 
-
-
-def Afficher_Stock(request):
-    #a completer apres la creation de MCD
-    return render(request,"index.html")
-
-
-
-def testing(request):
-    return render(request,"test.html")
-
-
-def lololo(request):
-    return render(request,"partials/file.html")
 
 def Logout(request):
     return render(request,"login.html")
@@ -76,6 +79,7 @@ def supprimer_type_produit(request,pk):
 
 
 ###############################################################################################
+################# GESTION #########################################
 # les views de produit : 
 def lister_produit(request):
     if request.method == 'POST' :
@@ -158,7 +162,7 @@ def rechercher_typep_produit(request):
     if request.method == "GET" :
         query=request.GET.get("rechercher")
         if query : 
-            prod=produit.objects.filter(type_produit=query)
+            prod=produit.objects.filter(typep_designation__contains=query)
         return render(request,"operations/produit/rechercher.html",{"prod":prod})
     else :
         return render(request,"operations/produit/rechercher.html")
@@ -277,7 +281,27 @@ def rechercher_fournisseur(request):
 
 
 ###############################################################################################
+################# ACHAT #########################################
 #les views bon_commande
+def save_bc_pdf(request,code):
+        buffer = io.BytesIO()
+        x = canvas.Canvas(buffer)
+        bc = bon_commande.objects.filter(code_document=code)
+        x.drawString(40, 800, "Le "+datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S").__str__())
+        x.drawString(20, 750, "Code bon de commande : "+code.__str__())
+        x.drawString(20, 725, "Nom                                                     Qte")
+        x.drawString(20, 700, "-------------------------------------------------------------------")
+        line=675
+        for b in bc :
+            x.drawString(20, line, b.contient.__str__() + "                  " +b.qte.__str__() )
+            line-=20
+        
+        x.showPage()
+        x.save()
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename='BonCommande.pdf')
+
+
 def creer_bon_commande(request):
     if request.method == 'POST' :
         form=Creer_bon_commande(request.POST)
@@ -332,22 +356,42 @@ def creer_facture(request):
         if form.is_valid() :
             form.save()
             form=Creer_facture()
-            return render(request,"achat/creerfacture.html",{"form":form})
+        return redirect('factures')
     else:
         form=Creer_facture()
-        return render(request,"achat/creerfacture.html",{"form":form})
+        factures=facture.objects.all()
+        return render(request,"achat/creerfacture.html",{"factures":factures,"form":form})
 
 
 
 ###############################################################################################
-#les views facture
+#les views bon livraison
 def creer_bl(request):
     if request.method == 'POST' :
         form=Creer_bl(request.POST)
         if form.is_valid() :
             form.save()
             form=Creer_bl()
-        return render(request,"achat/creerbl.html",{"form":form})
+        return redirect('bls')
     else:
         form=Creer_bl()
-        return render(request,"achat/creerbl.html",{"form":form})
+        bls=bl.objects.all()
+        return render(request,"achat/creerbl.html",{"bls":bls,"form":form})
+
+
+
+#etat de stock de l'achat
+def saisir_etat_stock(request,id):
+        produits = bon_commande.objects.filter(code_document= id)
+        return render(request,'achat/entree.html',{'prod':produits , 'id':id})
+
+
+
+
+##########################################################################################################################
+################# STOCK #########################################
+
+#etat stock
+def afficher_etat_stock(request):
+    produits = produit.objects.all()
+    return render(request,"stock/etatstock.html",{"produits":produits})

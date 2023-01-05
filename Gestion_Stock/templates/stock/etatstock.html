@@ -5,15 +5,19 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rechercher produit</title>
+  <title>Etat Stock</title>
 
   <style>
-    #search-box>* {
+    .card>*,
+    #search-box,
+    .list-message {
       margin: 2%;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       font-weight: bold;
     }
+  
   </style>
+
 </head>
 
 <body>
@@ -21,56 +25,45 @@
 
   <nav class="navbar navbar-light bg-dark">
     <span class="navbar-text">
-      Recherche des produits
+      Bienvenue au Etat du stock
     </span>
   </nav>
 
+  <h4 class="list-message">La liste des types produit : </h4>
 
-
-  <div id="search-box">
-    <form action="" method="get">
-      <label class="form-label" for="rechercher">Rechercher des produits : </label>
-      <input id="rechercher" required name="rechercher" type="text" />
-      <button type="submit" class="btn btn-success">Rechercher</button>
-    </form>
-    <h4> resultat de reherche : </h4>
-  </div>
-
-
-
-  <table class="table-responsive table-bordered table-center">
+  <table class="table-responsive table-bordered">
     <thead>
       <tr>
         <th class="bg-success" scope="col">#</th>
         <th class="bg-success" scope="col">Designation</th>
         <th class="bg-success" scope="col">Type</th>
-        <th class="bg-success" scope="col">Type Produit</th>
+        <th class="bg-success" scope="col">Type produit</th>
+        <th class="bg-success" scope="col">qte</th>
+        <th class="bg-success" scope="col">Prix d'achat</th>
+        <th class="bg-success" scope="col">Prix de vente</th>
         <th class="bg-success" scope="col">Action</th>
       </tr>
     </thead>
-
-
-
     <tbody>
-      {% for p in prod %}
+      {% for p in produits %}
       <tr>
         <td>{{p.pk}}</td>
         <td>{{p.designation}}</td>
         <td>{{p.type}}</td>
         <td>{{p.typep.designation}}</td>
+        <td>{{p.qte}}</td>
+        <td>{{p.prix_achat}}</td>
+        <td>{{p.prix_vente}}</td>
         <td>
-
-          <button onclick=location.href="{% url 'modifier_produits' p.pk %}" type="button" class="btn btn-warning"> Edit
-          </button>
-          <button onclick=location.href="{% url 'supprimer_produits' p.pk %}" type="button" class="btn btn-danger">
-            Delete </button>
-
+          <button onclick=location.href="{% url 'modifier_produits' p.pk %}" type="button"
+            class="btn btn-warning">Edit</button>
+          <button onclick=location.href="{% url 'supprimer_produits' p.pk %}" type="button"
+            class="btn btn-danger">Delete </button>
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-
 
 </body>
 

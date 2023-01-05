@@ -30,7 +30,7 @@
   </nav>
 
   <div id="search-box">
-    <h4 class="list-message">Rechercher un produit par : </h4>
+    <h4 class="list-message"><i class="fa-solid fa-magnifying-glass"></i> Rechercher un produit par : </h4>
 
     <button onclick=location.href="{% url 'rechercher_produit' %}" type="button" class="btn btn-success"> Rechercher par
       designation
@@ -46,7 +46,7 @@
 
   <div class="card">
 
-    <h4 class="list-message">Creer un produit : </h4>
+    <h4 class="list-message"><i class="fa-solid fa-plus"></i> Creer un produit : </h4>
     <form action="" method="post">
 
       {% csrf_token %}
@@ -54,7 +54,7 @@
 
       <button type="submit" class="btn btn-success">Ajouter</button>
     </form>
-    <h4 class="list-message">Creer un type produit : </h4>
+    <h4 class="list-message"><i class="fa-solid fa-plus"></i> Creer un type produit : </h4>
 
     
     <form action="" method="post">
