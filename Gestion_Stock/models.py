@@ -23,9 +23,6 @@ class produit(models.Model):
     designation=models.CharField(max_length=50)
     type=models.CharField(max_length=50)
     typep=models.ForeignKey(type_produit,on_delete=models.CASCADE,related_name='type_produit')
-    qte = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1), MaxValueValidator(10000)])
-    prix_achat=models.FloatField(max_length=10,default=0,validators=[MinValueValidator(0)])
-    prix_vente=models.FloatField(max_length=10,default=0,validators=[MinValueValidator(0)])
     def __str__(self):
         return self.typep.designation
     def __str__(self):
@@ -81,5 +78,8 @@ class bl(models.Model):
 #entree stock
 class entree_stock(models.Model):
     contient_produit=models.ManyToManyField(bon_commande)
+    qte = models.PositiveIntegerField(default=0, validators=[MinValueValidator(1), MaxValueValidator(10000)])
+    prix_achat=models.FloatField(max_length=10,default=0,validators=[MinValueValidator(0)])
+    prix_vente=models.FloatField(max_length=10,default=0,validators=[MinValueValidator(0)])
     def __str__(self):
         return self.contient_produit.contient
