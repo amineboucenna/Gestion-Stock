@@ -10,9 +10,9 @@ from django.shortcuts import redirect, render
 #imports for views
 
 from .forms import (Creer_bl, Creer_bon_commande, Creer_client, Creer_facture,
-                    Creer_fournisseur, Creer_produit, Creer_typep)
+                    Creer_fournisseur, Creer_produit, Creer_typep,Creer_entree_S,Creer_sortie_S,Creer_vente)
 from .models import (Comptes, bl, bon_commande, client, facture, fournisseur,
-                     produit, type_produit)
+                     produit, type_produit , achat_entree_stock , reglement , stock , sortie_stock,vente)
 
 
 
@@ -147,25 +147,13 @@ def rechercher_produit(request):
 
 
 def rechercher_type_produit(request):
-    prod=''
     if request.method == "GET" :
         query=request.GET.get("rechercher")
         if query : 
-            prod=produit.objects.filter(type__contains=query)
-        return render(request,"operations/produit/rechercher.html",{"prod":prod})
+            prod=produit.objects.filter(type_produit_id=query)
+        return render(request,"operations/produit/rechercher_type_produit.html",{"prod":prod})
     else :
-        return render(request,"operations/produit/rechercher.html")
-
-
-def rechercher_typep_produit(request):
-    prod=''
-    if request.method == "GET" :
-        query=request.GET.get("rechercher")
-        if query : 
-            prod=produit.objects.filter(typep_designation__contains=query)
-        return render(request,"operations/produit/rechercher.html",{"prod":prod})
-    else :
-        return render(request,"operations/produit/rechercher.html")
+        return render(request,"operations/produit/rechercher_type_produit.html")
 
 
 
@@ -293,9 +281,9 @@ def save_bc_pdf(request,code):
         x.drawString(20, 700, "-------------------------------------------------------------------")
         line=675
         for b in bc :
-            x.drawString(20, line, b.contient.__str__() + "                  " +b.qte.__str__() )
-            line-=20
-        
+            for c in b.contient.all() :
+                x.drawString(20, line, c.designation.__str__() + "                  " +b.qte.__str__() )
+                line-=20
         x.showPage()
         x.save()
         buffer.seek(0)
@@ -380,18 +368,172 @@ def creer_bl(request):
 
 
 
+def supprimer_bl(pk):
+    delete_bl = bl.objects.filter(pk=pk)
+    delete_bl.delete()
+    redirect('bls')
+
+
+
 #etat de stock de l'achat
 def saisir_etat_stock(request,id):
-        produits = bon_commande.objects.filter(code_document= id)
-        return render(request,'achat/entree.html',{'prod':produits , 'id':id})
+        
+    selected_bon_commande = bon_commande.objects.filter(code_document=id)
+    for s in selected_bon_commande :
+        for c in s.contient.all() :
+            ach = achat_entree_stock()
+            ach.id_commande = s
+            ach.id_produit = c.pk
+            ach.qte = 0 
+            ach.prix_achat = 0
+            ach.prix_vente = 0
+            ach.tot = ach.prix_achat * ach.qte
+            ach.save()
+    selected_entree_stock= achat_entree_stock.objects.all()
+    return render(request,'achat/entree.html',{'selected_bc':selected_entree_stock, 'id':id})
 
 
+
+
+def inserer_etat_stock(request,pk,id):
+    entree_s=achat_entree_stock.objects.get(id=pk)
+    if request.method == 'POST' :
+        form=Creer_entree_S(request.POST,instance=entree_s)
+        if form.is_valid() :
+            form.save()
+            form=Creer_entree_S()
+            select_es = achat_entree_stock.objects.get(id=pk)
+            select_es.tot = select_es.qte * select_es.prix_achat
+            select_es.save()
+        select_es = achat_entree_stock.objects.all()
+        return render(request,'achat/entree.html',{'selected_bc':select_es , 'id':id })
+    else:
+        form=Creer_entree_S(instance=entree_s)
+        return render(request,"achat/creerentree.html",{"form":form})
+
+
+#reglement
+
+def gerer_reglement(request,id):
+    reg=''
+    if not reglement.objects.filter(code_bon_livraison = bl.objects.get(pk=id)) :
+        r = reglement()
+        r.code_bon_livraison = bl.objects.get(pk=id)
+        r.nom_fournisseur = bl.objects.get(pk=id).bl_avoir.nom + ' ' + bl.objects.get(pk=id).bl_avoir.prenom
+        total_ht = 0
+        for e in achat_entree_stock.objects.all() : 
+            total_ht = total_ht + e.tot
+        r.prix_reglement_bl = total_ht
+        r.prix_reglement_facture = total_ht - ( total_ht * 0.19 )
+        r.save()
+    else :
+        reg = reglement.objects.all()
+    return render(request,'achat/reglement.html',{'reglement':reg}) 
+
+
+
+
+
+def supprimer_reglement(pk):
+    reglement_supprimer = reglement.objects.filter(pk=pk)
+    reglement_supprimer.delete()
+    redirect('bls')
 
 
 ##########################################################################################################################
 ################# STOCK #########################################
 
+#entree stock
+
+
+
+def afficher_entree_stock(request):
+    selected_es = achat_entree_stock.objects.all()
+    return render(request,'stock/entrer.html',{'selected_es':selected_es})
+
+
+def enfiler_stock(request,pk):
+    e = achat_entree_stock.objects.get(id=pk)
+    s = stock()
+    s.id_produit = e.id_produit
+    s.qte = e.qte
+    s.prix_achat = e.prix_achat
+    s.prix_vente = e.prix_vente
+    s.save()   
+    selected_es = achat_entree_stock.objects.all()
+    return render(request,'stock/entrer.html',{'selected_es':selected_es})
+
+
 #etat stock
 def afficher_etat_stock(request):
-    produits = produit.objects.all()
-    return render(request,"stock/etatstock.html",{"produits":produits})
+    produits_stock = stock.objects.all()
+    total_achat = 0
+    total_vente = 0
+    for p in produits_stock : 
+        total_achat = p.prix_achat * p.qte
+        total_vente = p.prix_vente * p.qte
+    diff = total_vente - total_achat
+    return render(request,"stock/etatstock.html",{"produits_stock":produits_stock,'total_achat':total_achat,'total_vente':total_vente,'diff':diff})
+
+
+def imprimer_etat_stock(request):
+        buffer = io.BytesIO()
+        x = canvas.Canvas(buffer)
+        op_stock = stock.objects.all()
+        x.drawString(40, 800, "Le "+datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S").__str__())
+        x.drawString(20, 750, "La liste de produit en Stock : ")
+        x.drawString(20, 725, "Code Produit | Nom Produit | Qte |  Date Saisie | Prix d'achat | Prix de vente")
+        x.drawString(20, 700, "------------------------------------------------------------------------------------------------------")
+        line=675
+        for s in op_stock :
+            p = produit.objects.get(pk=s.pk)
+            x.drawString(20, line, p.pk.__str__() +" | "+ p.designation.__str__() +" | " +s.qte.__str__()+" | "+s.date_saisie.strftime("%d-%m-%Y %H:%M:%S").__str__()+" | "+s.prix_achat.__str__()+" | "+s.prix_vente.__str__() )
+            line-=20
+        x.showPage()
+        x.save()
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename='EtatStock.pdf')
+
+#sortie stock
+def defiler_stock(request,pk):
+    get_a_supprimer=stock.objects.get(id=pk)
+    if request.method == 'POST' :
+        form = Creer_sortie_S(request.POST,instance=get_a_supprimer)
+        if form.is_valid() : 
+            form.save()
+            last_sortie = sortie_stock.objects.get(pk=pk)
+            #get_a_supprimer.qte = get_a_supprimer.qte - last_sortie.qte_a_enlever
+            get_a_supprimer.save()
+            return redirect('afficher_sortie_stock')
+    else :
+        form= Creer_sortie_S(request.POST,instance=get_a_supprimer)
+        return render(request,'stock/inserersortiestock.html',{"form":form})
+
+
+def afficher_sortie_stock(request):
+    sortie_s = sortie_stock.objects.all()
+    return render(request,'stock/sortiestock.html',{"sortie_s":sortie_s})
+    
+
+
+#vente 
+def lister_vente(request):
+    if request.method == 'POST' :
+        form=Creer_vente(request.POST)
+        if form.is_valid() :
+            form.save()
+            form=Creer_vente()
+            ventes = vente.objects.all()
+            return render(request,"vente/ventecomptoir.html",{"vente":ventes,"form":form})
+        form=Creer_typep(request.POST)
+        if form.is_valid() :
+            form.save()
+            form=Creer_vente()
+            ventes = vente.objects.all()
+            return render(request,"vente/ventecomptoir.html",{"vente":ventes,"form":form})
+    else:
+        form=Creer_vente()
+        ventes = vente.objects.all()
+        return render(request,"vente/ventecomptoir.html",{"vente":ventes,"form":form})
+
+ 

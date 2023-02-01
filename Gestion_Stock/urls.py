@@ -19,7 +19,8 @@ urlpatterns = [
     path('login/produits/supprimer/',RedirectView.as_view(url='/produits/')),
     path('login/produits/rechercher/',views.rechercher_produit,name='rechercher_produit'),
     path('login/produits/rechercher/',views.rechercher_type_produit,name='rechercher_type_produit'),
-    path('login/produits/rechercher/',views.rechercher_typep_produit,name='rechercher_typep_produit'),
+    
+    
 
 
     #model typeproduit
@@ -63,30 +64,36 @@ urlpatterns = [
 
     #model bonlivraison
     path('login/achat/bonlivraison/',views.creer_bl,name='bls'),
+    path('login/achat/bonlivraison/supprimer/<int:pk>',views.supprimer_bl,name='supprimer_bl'),
+    
 
     #etat de stock selui de l'achat
     path('login/achat/etatstock/<int:id>',views.saisir_etat_stock,name='achat_etat_stock'),
+    path('login/achat/etatstock/modifier/<int:id>/<int:pk>',views.inserer_etat_stock,name='inserer_etat_stock'),
 
 
-
+    #reglement
+    path('login/achat/reglement/<int:id>',views.gerer_reglement,name='regler_bl'),
+    path('login/achat/reglement/<int:pk>',views.supprimer_reglement,name='supprimer_reglement'),
+    
 
 
 
     #STOCK
+    #ajouter
+    path('login/stock/entreestock/',views.afficher_entree_stock,name='afficher_entree_stock'),
+    path('login/stock/entreestock/<int:pk>',views.enfiler_stock,name='enfiler_stock'),
+
     #etat
     path('login/stock/etatstock/',views.afficher_etat_stock,name='etat_stock'),
+    path('login/stock/etatstock/imprimer/',views.imprimer_etat_stock,name='imprimer_etat_stock'),
 
+    #sortie 
 
+    path('login/stock/sortiestock/<int:pk>',views.defiler_stock,name='defiler_stock'),
+    path('login/stock/sortiestock/',views.afficher_sortie_stock,name='afficher_sortie_stock'),
 
-
-
-
-
-
-
-
-
-
-
+    #VENTE
+    path('login/vente/ventecomptoir/',views.lister_vente,name='lister_vente'),
 
 ]

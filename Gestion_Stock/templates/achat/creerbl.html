@@ -56,7 +56,8 @@
         <td>{{b.code_document.code_document}}</td>
         <td>{{b.date_document}}</td>
         <td>{{b.bl_avoir.nom}} {{b.bl_avoir.prenom}}</td>
-        <td><button onclick=location.href="{% url 'achat_etat_stock' b.code_document.code_document %}" type="button" class="btn btn-warning">Saisir l'entree du stock</button></td>
+        <td><button onclick=location.href="{% url 'regler_bl' b.pk %}" type="button" class="btn btn-warning">Saisir reglement</button>
+        <button onclick=location.href="{% url 'supprimer_bl' b.pk %}" type="button" class="btn btn-danger">Supprimer</button></td>
       </tr>
       {% endfor %}
     </tbody>

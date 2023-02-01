@@ -45,7 +45,9 @@
           <tr>
             <td>{{t.pk}}</td>
             <td>{{t.code_document}}</td>
-            <td>{{t.contient.designation}}</td>
+            {% for c in t.contient.all %}
+            <td>{{c.designation}}</td>
+            {% endfor %}
             <td>{{t.qte}}</td>
           </tr>
           {% endfor %}

@@ -28,6 +28,35 @@
 
   <h4 id="welcome-msg">Vous êtes en train de saisir le stock pour le bon commande : {{id}}</h4>
 
+
+
+  <table class="table-responsive table-bordered">
+    <thead>
+      <tr>
+        <th class="bg-success" scope="col">id produit</th>
+        <th class="bg-success" scope="col">Qte</th>
+        <th class="bg-success" scope="col">Prix d'achat (HT)</th>
+        <th class="bg-success" scope="col">Prix de vente</th>
+        <th class="bg-success" scope="col">montant HT</th>
+        <th class="bg-success" scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in selected_bc %}
+      <tr>
+        <td>{{e.id}}</td>
+        <td>{{e.qte}}</td>
+        <td>{{e.prix_achat}}</td>
+        <td>{{e.prix_vente}}</td>
+        <td>{{e.tot}}</td>
+        <td><button  onclick=location.href="{% url 'inserer_etat_stock' e.pk id %}"  type="button" class="btn btn-info"> Saisir détails </button></td>
+       </tr>
+       {% endfor %}
+    </tbody>
+  </table>
+
+
+
 </body>
 
 </html>

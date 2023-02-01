@@ -1,6 +1,6 @@
 from django.db.models import fields
 from django import forms
-from .models import bl, bon_commande, facture, produit,client,fournisseur, type_produit
+from .models import bl, bon_commande, facture, produit,client,fournisseur, type_produit,achat_entree_stock,sortie_stock,vente
 class Creer_produit(forms.ModelForm):
     class Meta:
         model = produit
@@ -42,3 +42,22 @@ class Creer_bl(forms.ModelForm):
     class Meta:
         model = bl
         fields="__all__"
+
+
+class Creer_entree_S(forms.ModelForm):
+    class Meta:
+        model = achat_entree_stock
+        fields ="__all__"
+
+
+
+class Creer_sortie_S(forms.ModelForm):
+    class Meta:
+        model = sortie_stock
+        fields ="__all__"
+        
+
+class Creer_vente(forms.ModelForm):
+    class Meta : 
+        model = vente
+        fields ="__all__"

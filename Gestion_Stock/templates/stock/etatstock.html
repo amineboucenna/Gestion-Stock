@@ -29,41 +29,61 @@
     </span>
   </nav>
 
-  <h4 class="list-message">La liste des types produit : </h4>
+  <h4 class="list-message">La liste des produits en stock:  <button onclick=location.href="{% url 'imprimer_etat_stock' %}" type="button" class="btn btn-warning">
+    Imprimer Stock</button></h4>
 
   <table class="table-responsive table-bordered">
     <thead>
       <tr>
-        <th class="bg-success" scope="col">#</th>
-        <th class="bg-success" scope="col">Designation</th>
-        <th class="bg-success" scope="col">Type</th>
-        <th class="bg-success" scope="col">Type produit</th>
-        <th class="bg-success" scope="col">qte</th>
+        <th class="bg-success" scope="col">Code Produit</th>
+        <th class="bg-success" scope="col">Date Saisie</th>
+        <th class="bg-success" scope="col">Qte</th>
         <th class="bg-success" scope="col">Prix d'achat</th>
         <th class="bg-success" scope="col">Prix de vente</th>
-        <th class="bg-success" scope="col">Action</th>
       </tr>
     </thead>
     <tbody>
-      {% for p in produits %}
+      {% for ps in produits_stock %}
       <tr>
-        <td>{{p.pk}}</td>
-        <td>{{p.designation}}</td>
-        <td>{{p.type}}</td>
-        <td>{{p.typep.designation}}</td>
-        <td>{{p.qte}}</td>
-        <td>{{p.prix_achat}}</td>
-        <td>{{p.prix_vente}}</td>
-        <td>
-          <button onclick=location.href="{% url 'modifier_produits' p.pk %}" type="button"
-            class="btn btn-warning">Edit</button>
-          <button onclick=location.href="{% url 'supprimer_produits' p.pk %}" type="button"
-            class="btn btn-danger">Delete </button>
-        </td>
+        <td>{{ps.pk}}</td>
+        <td>{{ps.date_saisie}}</td>
+        <td>{{ps.qte}}</td>
+        <td>{{ps.prix_achat}}</td>
+        <td>{{ps.prix_vente}}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+  
+  <div class="table-responsive">
+    <table class="table table-striped
+    table-hover	
+    table-borderless
+    table-primary
+    align-middle">
+      <thead class="table-light">
+        <caption></caption>
+        <tr>
+          <th>Prix Achat Total</th>
+          <th>Prix Vente Total</th>
+          <th>Différence</th>
+        </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          <tr class="table-primary" >
+            <td>{{total_achat}}</td>
+            <td>{{total_vente}}</td>
+            <td>{{diff}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          
+        </tfoot>
+    </table>
+  </div>
+
+
+  
 
 </body>
 

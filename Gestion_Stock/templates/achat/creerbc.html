@@ -52,7 +52,9 @@
       {% for b in bc %}
       <tr>
         <td>{{b.code_document}}</td>
-        <td>{{b.contient}}</td>
+        {% for c in b.contient.all %}
+        <td>{{c.designation}}</td>
+        {% endfor %}
         <td>{{b.qte}}</td>
         <td>
           <button type="button" class="btn btn-warning" onclick=location.href="{% url 'enregistrer_bc_pdf' b.code_document  %}">Enregistrer pdf</button>

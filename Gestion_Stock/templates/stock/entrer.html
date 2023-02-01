@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stock : Sorite du stock</title>
+  <title>Stock : Entree du stock</title>
 
   <style>
     #search-box>* , #welcome-msg{
@@ -21,7 +21,7 @@
 
   <nav class="navbar navbar-light bg-dark">
     <span class="navbar-text">
-        Stock : Sortie du stock
+        Stock : Entrée du stock
     </span>
   </nav>
 
@@ -29,17 +29,18 @@
     <thead>
       <tr>
         <th class="bg-success" scope="col">id produit</th>
-        <th class="bg-success" scope="col">Qte Enlevee</th>
-        <th class="bg-success" scope="col">Motif</th>
+        <th class="bg-success" scope="col">Qte</th>
+        <th class="bg-success" scope="col">Action</th>
       </tr>
     </thead>
     <tbody>
-      {% for s in sortie_s %}
+      {% for e in selected_es %}
       <tr>
-        <td>{{s.id}}</td>
-        <td>{{s.qte_a_enlever}}</td>
-        <td>{{s.motif}}</td>  
-        </tr>
+        <td>{{e.id}}</td>
+        <td>{{e.qte}}</td>
+        <td><button  onclick=location.href="{% url 'enfiler_stock' e.id %}"  type="button" class="btn btn-info">Ajouter dans le stock</button>
+          <button  onclick=location.href="{% url 'defiler_stock' e.id %}"  type="button" class="btn btn-info">Supprimer de stock</button></td>
+       </tr>
        {% endfor %}
     </tbody>
   </table>

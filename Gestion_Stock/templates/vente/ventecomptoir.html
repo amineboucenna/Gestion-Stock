@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vente comptoir</title>
+
+    <style>
+        .card>*,
+        #search-box,
+        .list-message {
+            margin: 2%;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+
+<body>
+    {%include 'partials/file.html' %}
+
+    <nav class="navbar navbar-light bg-dark">
+        <span class="navbar-text">
+            Bienvenue au Vente comptoir
+        </span>
+    </nav>
+
+    <h4>Rechercher un Produit</h4>
+    <button onclick=location.href="{% url 'rechercher_produit' %}" type="button" class="btn btn-success">Rechercher
+        produit</button>
+    <h4>Rechercher un Client</h4>
+    <button onclick=location.href="{% url 'rechercher_clients' %}" type="button" class="btn btn-success">Rechercher
+        Client</button>
+    </div>
+
+    <div class="card">
+
+        <h4 class="list-message"><i class="fa-solid fa-plus"></i> Creer une vente comptoir : </h4>
+        <form action="" method="post">
+
+            {% csrf_token %}
+            {{form.as_p}}
+
+            <button type="submit" class="btn btn-success">Ajouter</button>
+        </form>
+
+
+    </div>
+
+    <h4 class="list-message">La liste des ventes : </h4>
+
+
+    <table class="table-responsive table-bordered">
+        <thead>
+            <tr>
+                <th class="bg-success" scope="col">#</th>
+                <th class="bg-success" scope="col">Client</th>
+                <th class="bg-success" scope="col">Produit vendu</th>
+                <th class="bg-success" scope="col">Qte vendu</th>
+            </tr>
+        </thead>
+
+
+
+        <tbody>
+            {% for v in vente %}
+
+            <tr>
+                <td>{{v.pk}}</td>
+                {% for c in v.code_client.all %}
+                <td>{{c.nom}}</td>
+                {% endfor %}
+                {% for p in v.produit_a_vendre.all %}
+                <td>{{p.pk}}</td>
+                {% endfor %}
+                <td>{{v.qte_a_vendre}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+
+</html>
